@@ -4,29 +4,89 @@ var infodump;
 var metric = 0;
 var uvData;
 var forcast;
-var forcastSelect = [3, 13, 21, 29, 37]
+var forcastSelect = [5, 13, 21, 29, 37];
+var storedArray = [];
+var coordObject;
+onStart()
 
+function onStart() {
+    buildarray()
+    if (storedArray !== undefined) {
+        if (storedArray[0] !== undefined) {
+            buildUrl(storedArray[0].cityLat ,null , storedArray[0].cityLong)
+
+        }
+        if (storedArray[1] !== undefined) {
+            buildButtons()
+        }
+    }
+}
+function buildarray() {
+
+    if (localStorage.getItem(0) !== null) {
+        for (let n = 0; n < 6; n++) {
+            var storedData = JSON.parse(localStorage.getItem(n));
+            if (storedData !== undefined) {
+                storedArray.push(storedData);
+            }
+            else {
+                return 0
+            }
+
+
+        }
+    }
+}
+function buildButtons() {
+    $("#history").empty()
+    for (let i = 1; i < storedArray.length; i++) {
+        let button = $(`<div class="col-12 btn btn-primary history-btn">`);
+        let aLat = storedArray[i].cityLat;
+        let aLong = storedArray[i].cityLong;
+        coordObject = {
+            lat: aLat,
+            long: aLong,
+        }
+        button.data(coordObject);
+        button.text(`${storedArray[i].city}`);
+        $("#history").append(button);
+    }
+    $(".history-btn").on("click", function (event) {
+        stopPropagation();
+        let lat = this.data(coordObject.lat);
+        let lon = this.data(coordObject.long);
+        buildUrl(lat, null, lon);
+    })
+}
 $("#search").on("click", function (event) {
     event.stopPropagation();
     searchbarValue = $("#searchbox").val();
     searchbarValue = searchbarValue.toString();
     buildUrl(searchbarValue, null, null);
+
 })
 function buildUrl(val, val2, val3) {
     let apiString;
     //if second value is null 
-    if (val2 === null) {
-        //search by city name
-        var searchBy;
-        if ($("#byName").is(':checked')) {
-            searchBy = "q";
+    if (val2 === null || val2 === undefined) {
+        if (val3 === null || val3 === undefined) {
+            
+            //search by city name
+            var searchBy;
+            if ($("#byName").is(':checked')) {
+                searchBy = "q";
+            }
+            //search by zip
+            else {
+                searchBy = "zip";
+            }
+            apiString = "http://api.openweathermap.org/data/2.5/weather?" + searchBy + "=" + val + ",&appid=" + apiKey;
         }
-        //search by zip
         else {
-            searchBy = "zip";
+            apiString = "http://api.openweathermap.org/data/2.5/weather?appid=" + apiKey + "&lat=" + val + "&lon=" + val3 
         }
-        apiString = "http://api.openweathermap.org/data/2.5/weather?" + searchBy + "=" + val + ",&appid=" + apiKey;
         requestData(apiString, 0);
+
     }
     else if (val3 === null) {
         apiString = "http://api.openweathermap.org/data/2.5/uvi?appid=" + apiKey + "&lat=" + val + "&lon=" + val2
@@ -53,7 +113,13 @@ function requestData(apiUrl, x) {
                 infodump = response;
                 let lat = infodump.coord.lat;
                 let long = infodump.coord.lon;
-                buildUrl(lat, long, null)
+                if (infodump.name !== storedArray[0].cityName) {
+                    saveHistory(infodump.name, lat, long);
+                    buildButtons();
+                }
+
+                buildUrl(lat, long, null);
+
             }
             else if (x === 1) {
                 uvData = response;
@@ -154,7 +220,7 @@ function buildForcast(forc) {
 
         let iconSrc = forc.list[i].weather[0].icon
         let date = forc.list[i].dt_txt;
-        date = date.slice(start , end);
+        date = date.slice(5, 10);
         let weather = forc.list[i].weather[0].main
         let weatherDesc = forc.list[i].weather[0].description
         let temp;
@@ -194,5 +260,22 @@ function buildForcast(forc) {
 
 
     })
+
+}
+function saveHistory(name, lat, long) {
+    let cityInfo = {
+        city: name,
+        cityLat: lat,
+        cityLong: long,
+    }
+    storedArray.unshift(cityInfo);
+    if (storedArray.length > 6) {
+        storedArray.splice(-1, 1);
+    }
+    for (let i = 0; i < storedArray.length; i++) {
+        if (storedArray[i] !== null) {
+            localStorage.setItem(i, JSON.stringify(storedArray[i]));
+        }
+    }
 
 }

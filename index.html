@@ -12,22 +12,28 @@
 </head>
 
 <body>
-    
-        <div class="row container">
-            <div class="col-md-3">
-                <input type="text" id="searchbox">
-                <input type="button" id="search" value="search"><br>
-                <input type="radio" name="zip" id="byName" value="city" checked>
-                <label for="city">City</label><br>
-                <input type="radio" name="zip" id="zipcode" value="zipcode">
-                <label for="zipcode">Zipcode </label><br>
+
+    <div class="row container">
+        <div class="col-md-3">
+            <input type="text" id="searchbox">
+            <input type="button" id="search" value="search"><br>
+            <input type="radio" name="zip" id="byName" value="city" checked>
+            <label for="city">City</label><br>
+            <input type="radio" name="zip" id="zipcode" value="zipcode">
+            <label for="zipcode">Zipcode </label><br>
+            <div class="row">
+                <div id="history" class="col-12">
+
+                </div>
 
             </div>
-            <div class="col-md-9" id="current">
-               
-            </div>
         </div>
-    
+
+        <div class="col-md-9" id="current">
+
+        </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery.js"></script>
     <script src="code.js"></script>
 </body>
