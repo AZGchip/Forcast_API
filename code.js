@@ -4,7 +4,7 @@ var infodump;
 var metric = 0;
 var uvData;
 var forcast;
-var forcastSelect = [0, 13, 21, 29, 37]
+var forcastSelect = [3, 13, 21, 29, 37]
 
 $("#search").on("click", function (event) {
     event.stopPropagation();
@@ -28,12 +28,15 @@ function buildUrl(val, val2, val3) {
         apiString = "http://api.openweathermap.org/data/2.5/weather?" + searchBy + "=" + val + ",&appid=" + apiKey;
         requestData(apiString, 0);
     }
-    else {
+    else if (val3 === null) {
         apiString = "http://api.openweathermap.org/data/2.5/uvi?appid=" + apiKey + "&lat=" + val + "&lon=" + val2
         requestData(apiString, 1)
+
+
+    }
+    else {
         apiString = "http://api.openweathermap.org/data/2.5/forecast?&lat=" + val + "&lon=" + val2 + "&appid=" + apiKey
         requestData(apiString, 2)
-
     }
 }
 function requestData(apiUrl, x) {
@@ -54,6 +57,9 @@ function requestData(apiUrl, x) {
             }
             else if (x === 1) {
                 uvData = response;
+                let lat = uvData.lat;
+                let long = uvData.lon;
+                buildUrl(lat, long, 1)
 
             }
             else if (x === 2) {
@@ -91,6 +97,7 @@ function getinfo(current, uv, forcast) {
         low = toFahrenheit(infodump.main.temp_min)
         unit = "F";
     }
+    let iconSrc = current.weather[0].icon
     let uvVal = uv.value;
     $("#current").html(`
     <div class="row">
@@ -105,6 +112,7 @@ function getinfo(current, uv, forcast) {
 
 <div class="row-12 text-center">
     <h2>${weatherDesc}</h2>
+    <img src="http://openweathermap.org/img/wn/${iconSrc}@2x.png">
 </div>
 <div class="row-12 text-center">
     <h3>${temp}&deg${unit}</h3>
@@ -144,8 +152,9 @@ function buildForcast(forc) {
     forcastSelect.forEach(i => {
 
 
-
+        let iconSrc = forc.list[i].weather[0].icon
         let date = forc.list[i].dt_txt;
+        date = date.slice(start , end);
         let weather = forc.list[i].weather[0].main
         let weatherDesc = forc.list[i].weather[0].description
         let temp;
@@ -170,21 +179,14 @@ function buildForcast(forc) {
 
 <div class="row-12 text-center">
     <p>${weatherDesc}</p>
+    <img src="http://openweathermap.org/img/wn/${iconSrc}@2x.png">
 </div>
 <div class="row-12 text-center">
     <h3>${temp}&deg${unit}</h3>
     <p class="text-center">Humidity: ${humidity}</p>
 </div>
 <div class="row">
-    
-    
-      
-       
-
 </div>
-
-
-
 </div>
     `)
         $("#fiveForcast").append(forcastDay)
@@ -192,5 +194,5 @@ function buildForcast(forc) {
 
 
     })
-    
+
 }
