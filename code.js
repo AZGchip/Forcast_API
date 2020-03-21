@@ -7,7 +7,7 @@ var forcast;
 var forcastSelect = [5, 13, 21, 29, 37];
 var storedArray = [];
 var coordObject;
-var test
+var test;
 onStart()
 
 function onStart() {
@@ -22,6 +22,19 @@ function onStart() {
         }
     }
 }
+$("#change-unit").on("click",function(event){
+    event.stopPropagation();
+    if (metric ===  0){
+        $(this).html(`C&deg`);
+        metric = 1;
+    }
+    else{
+        $(this).html(`F &deg`);
+        metric = 0;
+    }
+    buildUrl(storedArray[0].cityLat, null, storedArray[0].cityLong)
+})
+
 function buildarray() {
 
     if (localStorage.getItem(0) !== null) {
@@ -41,8 +54,8 @@ function buildarray() {
 function buildButtons() {
     $("#history").empty()
     for (let i = 1; i < storedArray.length; i++) {
-        if (storedArray[i] !== undefined || storedArray[i] !== null) {
-            let button = $(`<div class="col-12 btn btn-primary history-btn">`);
+        if (storedArray[i] !== undefined && storedArray[i] !== null) {
+            let button = $(`<div class="col-12 btn btn-primary history-btn mb-1">`);
             let aLat = storedArray[i].cityLat;
             let aLong = storedArray[i].cityLong;
             let city = storedArray[i].city;
@@ -158,7 +171,6 @@ function requestData(apiUrl, x,cityval) {
 function getinfo(current, uv, forcast) {
 
     let cityName = current.name
-    let weather = current.weather[0].main
     let weatherDesc = current.weather[0].description
     let temp;
     let feels;
@@ -167,6 +179,14 @@ function getinfo(current, uv, forcast) {
     let unit;
     let humidity = Math.round(infodump.main.humidity) + "%"
     let wind = current.wind;
+ let date = current.dt_txt;
+ var today = new Date();
+let dd = String(today.getDate()).padStart(2, '0');
+let mm = String(today.getMonth() + 1).padStart(2, '0');
+let yyyy = today.getFullYear();
+//builds and displays date
+today = mm + '/' + dd + '/' + yyyy;
+$("#datehere").text(today);
     if (metric) {
         temp = toCelsius(infodump.main.temp)
         feels = toCelsius(infodump.main.feels_like)
@@ -181,11 +201,12 @@ function getinfo(current, uv, forcast) {
         low = toFahrenheit(infodump.main.temp_min)
         unit = "F";
     }
+    
     let iconSrc = current.weather[0].icon
     let uvVal = uv.value;
     $("#current").html(`
-    <div class="row">
-    <div class="col-12 text-center">tues march 17</div>
+    <div class="row ">
+    <div class="col-12 text-center">${today}</div>
 </div>
 <div class="row">
 
@@ -194,31 +215,28 @@ function getinfo(current, uv, forcast) {
     </div>
 </div>
 
-<div class="row-12 text-center">
+<div class="row-md-12 text-center">
     <h2>${weatherDesc}</h2>
     <img src="http://openweathermap.org/img/wn/${iconSrc}@2x.png">
 </div>
 <div class="row-12 text-center">
-    <h3>${temp}&deg${unit}</h3>
+    <h2>${temp}&deg${unit}</h2>
 </div>
 <div class="row">
-    <div class="col-6">
+    <div class="col-md-6">
         <p class="text-center">High: ${high}&deg${unit}</p>
         <p class="text-center">Low: ${low}&deg${unit}</p>
     </div>
-    <div class="col 6">
+    <div class="col-md-6">
         <p class="text-center">Humidity: ${humidity}</p>
-        <p class="text-center">wind speed:${wind.speed}</p>
+        <p class="text-center">wind speed: ${wind.speed} MPH</p>
     </div>
 
 </div>
 <div class="row">
-    <h2 class="col-12 text-center">uv index:${uvVal}</h2>
+    <h4 class="col-md-12 text-center "id="uvcolor">uv index:${uvVal}</h4>
 </div>
-<div class="row" id="fiveForcast">
-
-
-<div class="col-sm-1"></div>
+<div class="row " id="fiveForcast">
 </div>
 
     `)
@@ -254,13 +272,11 @@ function buildForcast(forc) {
             temp = toFahrenheit(forc.list[i].main.temp);
             unit = "F";
         }
-        let forcastDay = $(`<div class="col-2">`);
+        let forcastDay = $(`<div class="col-md-2 card bg-primary mx-auto">`);
         forcastDay.html(`
-    <div class="row">
+<div class="row">
     <div class="col-12 text-center">${date}</div>
 </div>
-
-
 <div class="row-12 text-center">
     <p>${weatherDesc}</p>
     <img src="http://openweathermap.org/img/wn/${iconSrc}@2x.png">
@@ -269,10 +285,7 @@ function buildForcast(forc) {
     <h3>${temp}&deg${unit}</h3>
     <p class="text-center">Humidity: ${humidity}</p>
 </div>
-<div class="row">
-</div>
-</div>
-    `)
+`)
         $("#fiveForcast").append(forcastDay)
 
 
