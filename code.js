@@ -328,7 +328,7 @@ function saveHistory(name, lat, long) {
         cityLat: lat,
         cityLong: long,
     }
-    if (cityInfo.cityLat !== storedArray[0].cityLat) {
+    if (storedArray[0] === undefined || cityInfo.cityLat !== storedArray[0].cityLat) {
         storedArray.unshift(cityInfo);
     }
     if (storedArray.length > 6) {
