@@ -115,26 +115,26 @@ function buildUrl(val, val2, val3, val4) {
                 searchBy = "zip";
             }
             //url is sent to REQUESTDATA with the URL and a 0 to direct path 
-            apiString = "http://api.openweathermap.org/data/2.5/weather?" + searchBy + "=" + val + ",&appid=" + apiKey;
+            apiString = "https://api.openweathermap.org/data/2.5/weather?" + searchBy + "=" + val + ",&appid=" + apiKey;
             requestData(apiString, 0);
         }
         //If VAL3 is not NULL URL is current weather search using lat and lon of history button data
         else {
             //url is sent to REQUESTDATA with the URL and a 0 to direct path as well as VAL 4 to fix cityname data
-            apiString = "http://api.openweathermap.org/data/2.5/weather?appid=" + apiKey + "&lat=" + val + "&lon=" + val3;
+            apiString = "https://api.openweathermap.org/data/2.5/weather?appid=" + apiKey + "&lat=" + val + "&lon=" + val3;
             requestData(apiString, 0, val4);
         }
     }
     //if VAL3 is NULL, URL is for UVI data
     else if (val3 === null) {
         //url is sent to REQUESTDATA with the URL and a 1 to direct path 
-        apiString = "http://api.openweathermap.org/data/2.5/uvi?appid=" + apiKey + "&lat=" + val + "&lon=" + val2;
+        apiString = "https://api.openweathermap.org/data/2.5/uvi?appid=" + apiKey + "&lat=" + val + "&lon=" + val2;
         requestData(apiString, 1)
     }
     //Else URL is for Forcast data
     else {
         //url is sent to REQUESTDATA with the URL and a 2 to direct path 
-        apiString = "http://api.openweathermap.org/data/2.5/forecast?&lat=" + val + "&lon=" + val2 + "&appid=" + apiKey;
+        apiString = "https://api.openweathermap.org/data/2.5/forecast?&lat=" + val + "&lon=" + val2 + "&appid=" + apiKey;
         requestData(apiString, 2)
     }
 }
