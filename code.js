@@ -7,13 +7,14 @@ var forcast;
 var forcastSelect = [5, 13, 21, 29, 37];
 var storedArray = [];
 var coordObject;
+var test
 onStart()
 
 function onStart() {
     buildarray()
     if (storedArray !== undefined) {
         if (storedArray[0] !== undefined) {
-            buildUrl(storedArray[0].cityLat ,null , storedArray[0].cityLong)
+            buildUrl(storedArray[0].cityLat, null, storedArray[0].cityLong)
 
         }
         if (storedArray[1] !== undefined) {
@@ -40,22 +41,28 @@ function buildarray() {
 function buildButtons() {
     $("#history").empty()
     for (let i = 1; i < storedArray.length; i++) {
-        let button = $(`<div class="col-12 btn btn-primary history-btn">`);
-        let aLat = storedArray[i].cityLat;
-        let aLong = storedArray[i].cityLong;
-        coordObject = {
-            lat: aLat,
-            long: aLong,
+        if (storedArray[i] !== undefined || storedArray[i] !== null) {
+            let button = $(`<div class="col-12 btn btn-primary history-btn">`);
+            let aLat = storedArray[i].cityLat;
+            let aLong = storedArray[i].cityLong;
+            let city = storedArray[i].city;
+            coordObject = {
+                lat: aLat,
+                long: aLong,
+                city: city
+            }
+            button.data(coordObject);
+            button.text(`${storedArray[i].city}`);
+            $("#history").append(button);
         }
-        button.data(coordObject);
-        button.text(`${storedArray[i].city}`);
-        $("#history").append(button);
     }
     $(".history-btn").on("click", function (event) {
-        stopPropagation();
-        let lat = this.data(coordObject.lat);
-        let lon = this.data(coordObject.long);
-        buildUrl(lat, null, lon);
+        event.stopPropagation();
+        let lat = $(this).data(coordObject.lat);
+        let lon = $(this).data(coordObject.long);
+        let city = $(this).data(coordObject.city);
+        buildUrl(lat.lat, null, lon.long,lon.city);
+        console.log(lon.city)
     })
 }
 $("#search").on("click", function (event) {
@@ -65,12 +72,12 @@ $("#search").on("click", function (event) {
     buildUrl(searchbarValue, null, null);
 
 })
-function buildUrl(val, val2, val3) {
+function buildUrl(val, val2, val3,val4) {
     let apiString;
     //if second value is null 
     if (val2 === null || val2 === undefined) {
         if (val3 === null || val3 === undefined) {
-            
+
             //search by city name
             var searchBy;
             if ($("#byName").is(':checked')) {
@@ -81,11 +88,13 @@ function buildUrl(val, val2, val3) {
                 searchBy = "zip";
             }
             apiString = "http://api.openweathermap.org/data/2.5/weather?" + searchBy + "=" + val + ",&appid=" + apiKey;
+            requestData(apiString, 0);
         }
         else {
-            apiString = "http://api.openweathermap.org/data/2.5/weather?appid=" + apiKey + "&lat=" + val + "&lon=" + val3 
+            apiString = "http://api.openweathermap.org/data/2.5/weather?appid=" + apiKey + "&lat=" + val + "&lon=" + val3
+            requestData(apiString, 0,val4);
         }
-        requestData(apiString, 0);
+        
 
     }
     else if (val3 === null) {
@@ -99,7 +108,7 @@ function buildUrl(val, val2, val3) {
         requestData(apiString, 2)
     }
 }
-function requestData(apiUrl, x) {
+function requestData(apiUrl, x,cityval) {
 
 
     $.ajax({
@@ -110,12 +119,21 @@ function requestData(apiUrl, x) {
 
 
             if (x === 0) {
+                console.log(cityval)
                 infodump = response;
+                if(cityval !== null&& cityval !== undefined){
+                    infodump.name = cityval;
+                }
                 let lat = infodump.coord.lat;
                 let long = infodump.coord.lon;
-                if (infodump.name !== storedArray[0].cityName) {
+                if (storedArray[0] !== undefined) {
+                    if (infodump.name !== storedArray[0].cityName) {
+                        saveHistory(infodump.name, lat, long);
+                        buildButtons();
+                    }
+                }
+                else{
                     saveHistory(infodump.name, lat, long);
-                    buildButtons();
                 }
 
                 buildUrl(lat, long, null);
@@ -268,7 +286,10 @@ function saveHistory(name, lat, long) {
         cityLat: lat,
         cityLong: long,
     }
-    storedArray.unshift(cityInfo);
+    if (cityInfo.cityLat !== storedArray[0].cityLat){
+        storedArray.unshift(cityInfo);
+    }
+    
     if (storedArray.length > 6) {
         storedArray.splice(-1, 1);
     }
