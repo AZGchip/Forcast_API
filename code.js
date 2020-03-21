@@ -311,7 +311,7 @@ function buildForcast(forc) {
 </div>
 <div class="row-12 text-center">
     <p>${weatherDesc}</p>
-    <img src="http://openweathermap.org/img/wn/${iconSrc}@2x.png">
+    <img src="https://openweathermap.org/img/wn/${iconSrc}@2x.png">
 </div>
 <div class="row-12 text-center">
     <h3>${temp}&deg${unit}</h3>
