@@ -12,29 +12,27 @@
 </head>
 
 <body class="bg-secondary">
- <!-- navbar -->
- <nav class="navbar navbar-expand navbar-dark bg-primary sticky-top shadow">
-    <div class="  w-100 order-0  ">
-        
-    </div>
-    <div class="mx-auto order-0  ">
-        <!-- title  -->
-        <a class="navbar-brand mx-auto " href="#">Weather API</a>
-       
-    </div>
-    <div class="navbar w-100 order-3 float-left">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <!-- date -->
-                <h5 id="datehere"class="text-light" ></h5>
-            </li>
-            
-        </ul>
-    </div>
-</nav>
+    <!-- navbar -->
+    <nav class="navbar navbar-expand navbar-dark bg-primary sticky-top shadow">
+        <div class="mx-auto order-0  ">
+            <!-- title  -->
+            <a class="navbar-brand mx-auto " href="#">Weather API</a>
+
+        </div>
+        <div class="navbar w-100 order-3 float-left">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <!-- date -->
+                    <h5 id="datehere" class="text-light"></h5>
+                </li>
+
+            </ul>
+        </div>
+    </nav>
+    <!-- main content -->
     <div class="row container mx-auto bg-dark text-light  ">
         <div class="col-md-3 px-auto border-secondary border-right ">
-            
+            <!-- searchboxes -->
             <input type="text" id="searchbox" class="mt-1">
             <input type="button" id="search" value="search"><br>
             <div class="col-sm-6"><input type="radio" name="zip" id="byName" value="city" checked>
@@ -42,21 +40,19 @@
                 <input type="radio" name="zip" id="zipcode" value="zipcode">
                 <label for="zipcode">Zipcode </label><br>
             </div>
-            
-            <div class="btn btn-primary"id="change-unit">F&deg</div><hr>
+            <div class="btn btn-primary" id="change-unit">F&deg</div>
+            <hr>
             <div class="row">
+                <!-- history buttons go here -->
                 <div id="history" class="col-12">
-
                 </div>
-
             </div>
         </div>
-
+        <!-- current weather and forcast go here -->
         <div class="col-md-9  mx-auto " id="current">
-
         </div>
     </div>
-
+    <!-- jquery and script -->
     <script src="https://code.jquery.com/jquery.js"></script>
     <script src="code.js"></script>
 </body>

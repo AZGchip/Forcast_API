@@ -2,3 +2,21 @@
     height: 100vh;
     padding: 0px;
 }
+#uv1{
+    background-color:rgb(71, 141, 71);
+    color:black;
+}
+#uv2{
+    background-color:rgb(255, 255, 118);
+    color:black;
+}
+#uv3{
+    background-color:rgb(236, 128, 65);
+    color:black;
+}
+#uv4{
+    background-color:rgb(184, 48, 48);
+}
+#uv5{
+    background-color:rgb(247, 0, 226);
+}
