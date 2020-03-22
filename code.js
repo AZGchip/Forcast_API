@@ -14,6 +14,7 @@ var infodump;
 var uvData;
 //forcast data
 var forcast;
+var cityInfo
 //when page is loaded
 onStart()
 function onStart() {
@@ -185,7 +186,7 @@ function requestData(apiUrl, x, cityval) {
 }
 // CURRENT and UV are used to fill in a html template. BUILDFORCAST is called on after to append forcast to template
 function getinfo(current, uv, forcast) {
-let cityName = current.name;
+    let cityName = current.name;
     let weatherDesc = current.weather[0].description;
     let temp;
     let feels;
@@ -221,19 +222,19 @@ let cityName = current.name;
     let uvVal = uv.value;
     var uvId;
 
-    if (uvVal >= 0 && uvVal <= 2){
+    if (uvVal >= 0 && uvVal <= 2) {
         uvId = "uv1";
     }
-    else if (uvVal > 2 && uvVal <= 5){
+    else if (uvVal > 2 && uvVal <= 5) {
         uvId = "uv2";
     }
-    else if (uvVal > 5 && uvVal <= 7){
+    else if (uvVal > 5 && uvVal <= 7) {
         uvId = "uv3";
     }
-    else if (uvVal > 7 && uvVal <= 10){
+    else if (uvVal > 7 && uvVal <= 10) {
         uvId = "uv4";
     }
-    else{
+    else {
         uvId = "uv5";
     }
 
@@ -285,7 +286,7 @@ function toFahrenheit(k) {
 }
 function buildForcast(forc) {
     //for each loop appends forcast template with forcast info from selected forcast number in FORCASTSELECT
-    
+
     forcastSelect.forEach(i => {
         let iconSrc = forc.list[i].weather[0].icon
         let date = forc.list[i].dt_txt;
@@ -323,14 +324,35 @@ function buildForcast(forc) {
 }
 //appends CITYINFO to STOREDARRAY. removes last object if list becomes longer than 6
 function saveHistory(name, lat, long) {
-    let cityInfo = {
+    cityInfo = {
         city: name,
         cityLat: lat,
         cityLong: long,
     }
-    if (storedArray[0] === undefined || cityInfo.cityLat !== storedArray[0].cityLat) {
+    if (storedArray[0] === undefined || storedArray[0] === null) {
         storedArray.unshift(cityInfo);
+
     }
+    else if (cityInfo.city !== storedArray[0].city) {
+        if (storedArray[1] === null) {
+            storedArray.unshift(cityInfo);
+        }
+        else {
+            for (let h = 1; h < storedArray.length; h++) {
+                console.log(h)
+                if (storedArray[h] !== null) {
+                    if (storedArray[h].city === cityInfo.city) {
+                        storedArray.splice(h,1)
+                        
+                        h = storedArray.length
+                    }
+                }
+            }
+            storedArray.unshift(cityInfo);
+        }
+
+    }
+
     if (storedArray.length > 6) {
         storedArray.splice(-1, 1);
     }
