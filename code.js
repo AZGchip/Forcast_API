@@ -14,7 +14,7 @@ var infodump;
 var uvData;
 //forcast data
 var forcast;
-var cityInfo
+
 //when page is loaded
 onStart()
 function onStart() {
@@ -250,7 +250,7 @@ function getinfo(current, uv, forcast) {
 
 <div class="row-md-12 text-center">
     <h2>${weatherDesc}</h2>
-    <img src="http://openweathermap.org/img/wn/${iconSrc}@2x.png">
+    <img src="https://openweathermap.org/img/wn/${iconSrc}@2x.png">
 </div>
 <div class="row-12 text-center">
     <h2>${temp}&deg${unit}</h2>
@@ -324,7 +324,7 @@ function buildForcast(forc) {
 }
 //appends CITYINFO to STOREDARRAY. removes last object if list becomes longer than 6
 function saveHistory(name, lat, long) {
-    cityInfo = {
+   let cityInfo = {
         city: name,
         cityLat: lat,
         cityLong: long,
@@ -339,7 +339,6 @@ function saveHistory(name, lat, long) {
         }
         else {
             for (let h = 1; h < storedArray.length; h++) {
-                console.log(h)
                 if (storedArray[h] !== null) {
                     if (storedArray[h].city === cityInfo.city) {
                         storedArray.splice(h,1)
