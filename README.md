@@ -1,3 +1,4 @@
+deployed site: https://azgchip.github.io/Forcast_By_Api
 This site uses api data from Openweather.org.
 when a user inputs a city or zip code into the search bar, an api call is made with the user input.
 from the response, the current weather is diplayed as well as a forcast and search history.
